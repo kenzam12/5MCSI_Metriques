@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphique des Commits</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <h2>Nombre de commits par minute</h2>
+    <div id="chart_div"></div>
+    <script type="text/javascript">
+      google.charts.load('current', {packages: ['corechart', 'line']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // Récupérer les données depuis l'API
+        fetch('/commits/')
+          .then(response => response.json())
+          .then(data => {
+            const commitData = data.results;
+
+            // Préparer les données pour Google Charts
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn('number', 'Minute');
+            dataTable.addColumn('number', 'Commits');
+
+            // Ajouter les données au tableau
+            commitData.forEach(entry => {
+              dataTable.addRow([entry.Minute, entry.Commits]);
+            });
+
+            // Configuration du graphique
+            var options = {
+              title: 'Activité des commits par minute',
+              curveType: 'function',
+              legend: { position: 'bottom' }
+            };
+
+            // Dessiner le graphique
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            chart.draw(dataTable, options);
+          })
+          .catch(error => console.log('Erreur de récupération des données :', error));
+      }
+    </script>
+</body>
+</html>
