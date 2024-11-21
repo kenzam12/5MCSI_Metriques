@@ -61,6 +61,9 @@ def commits():
     # Préparation des données pour le graphique
     results = [{"Minute": minute, "Commits": count} for minute, count in minutes_count.items()]
     return jsonify(results=results)
+@app.route("/rapport/")
+def mongraphique():
+    return render_template("commit.html")
   
 if __name__ == "__main__":
   app.run(debug=True)
